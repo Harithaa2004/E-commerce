@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .checkout-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            height: 100vh;
+            padding: 50px;
+            background: white;
+        }
+
+        .product-info {
+            flex: 1;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .product-info img {
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        .product-details {
+            text-align: left;
+            padding: 20px;
+        }
+
+        .payment-options {
+            flex: 1;
+            max-width: 400px;
+            background: #f8f8f8;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .pay-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #2c5f2d;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .pay-btn:hover {
+            background-color: #1e4a1c;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="checkout-container">
+        <div class="product-info" id="product-info">
+            <p>Loading product details...</p>
+        </div>
+        <div class="payment-options">
+            <h2>Choose Payment Method</h2>
+            <button class="pay-btn" onclick="pay('card')">Pay with Card</button>
+            <button class="pay-btn" onclick="pay('upi')">Pay with UPI</button>
+            <button class="pay-btn" onclick="pay('cod')">Pay on Delivery</button>
+        </div>
+    </div>
+
+    <script>
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        function loadProductDetails() {
+            const productId = getQueryParam('id');
+            if (!productId) {
+                document.getElementById('product-info').innerHTML = '<p>Invalid Product</p>';
+                return;
+            }
+            
+            fetch(`http://127.0.0.1:3333/products/${productId}`)
+                .then(response => response.json())
+                .then(product => {
+                    document.getElementById('product-info').innerHTML = `
+                        <img src="${product.imageURL}" alt="${product.name}">
+                        <div class="product-details">
+                            <h2>${product.name}</h2>
+                            <p><strong>Price:</strong> ₹${product.price}</p>
+                            <p><strong>Description:</strong> ${product.description || "No description available."}</p>
+                        </div>
+                    `;
+                })
+                .catch(error => {
+                    console.error('Error loading product:', error);
+                    document.getElementById('product-info').innerHTML = '<p>Error loading product details</p>';
+                });
+        }
+
+        function pay(method) {
+            alert(`Payment method selected: ${method}`);
+        }
+
+        window.onload = loadProductDetails;
+    </script>
+
+</body>
+</html>
