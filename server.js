@@ -17,7 +17,17 @@ mongoose.connect(MONGO_URI, {
 })
 .then(() => console.log("✅ MongoDB Connected"))
 .catch(err => console.error("❌ MongoDB Connection Error:", err));
+const contactSchema = new mongoose.Schema({
+    name: String,
+    email: String,
+    message: String,
+    date: {
+        type: Date,
+        default: Date.now
+    }
+});
 
+const Contact = mongoose.model("Contact", contactSchema);
 const userSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
@@ -245,4 +255,22 @@ app.get("/products/:id", async (req, res) => {
 });
 app.listen(PORT, () => {
     console.log(`✅ Server running at http://127.0.0.1:${PORT}/`);
+});
+
+app.post("/contact", async (req, res) => {
+    try {
+        const { name, email, message } = req.body;
+
+        if (!name || !email || !message) {
+            return res.status(400).json({ error: "All fields are required." });
+        }
+
+        const newContact = new Contact({ name, email, message });
+        await newContact.save();
+
+        res.status(200).json({ message: "Contact saved successfully!" });
+    } catch (err) {
+        console.error("Server Error:", err);
+        res.status(500).json({ error: "Internal server error." });
+    }
 });
