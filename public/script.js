@@ -20,7 +20,8 @@ document.addEventListener("DOMContentLoaded", function () {
         "tools": "gardentools.html",
         "pots": "pots.html",
         "seeds": "seeds.html",
-        "signin": "auth.html"
+        "signin": "auth.html",
+        "fertiliser":"fertiliser.html"
     };
 
     for (const id in navLinks) {
