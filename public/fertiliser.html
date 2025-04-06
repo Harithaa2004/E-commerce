@@ -180,7 +180,7 @@
   <script>
     async function loadFertiliser() {
       try {
-        const response = await fetch("http://127.0.0.1:3333/products?category=fertiliser");
+        const response = await fetch("http://127.0.0.1:3333/products?category=fertilizers");
         const fertiliser = await response.json();
 
         const productList = document.getElementById("product-list");
