@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Seeds</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -212,8 +213,21 @@
                             <img src="${seed.imageURL}" alt="${seed.name}">
                             <h3>${seed.name}</h3>
                             <p>Price: ₹${seed.price}</p>
-                            <button class="buy-btn" onclick="buyNow('${seed._id}')">Buy Now</button>
-                            <button class="add-btn" onclick="addToCart('${seed.name}', ${seed.price})">Add to Cart</button>
+                            <p>Stock: ${seed.stock}</p>
+                             <button 
+                                class="buy-btn" 
+                                onclick="buyNow('${seed._id}')" 
+                                ${seed.stock === 0 ? "disabled style='background: gray; cursor: not-allowed;'" : ""}
+                            >
+                                ${seed.stock === 0 ? "Out of Stock" : "Buy Now"}
+                            </button>
+                            <button 
+                                class="add-btn" 
+                                onclick="addToCart('${seed.name}', ${seed.price})" 
+                                ${seed.stock === 0 ? "disabled style='background: gray; cursor: not-allowed;'" : ""}
+                            >
+                                Add to Cart
+                            </button>
                         `;
                         productList.appendChild(productCard);
                     });

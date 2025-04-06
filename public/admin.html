@@ -168,6 +168,9 @@
             <label for="imageURL">Image URL:</label>
             <input type="url" id="imageURL" placeholder="Enter image URL" required>
 
+            <label for="stock">Stock:</label>
+            <input type="number" id="stock" name="stock" required />
+
             <button type="submit">Add Product</button>
             <p class="loading" id="loadingMessage">Adding product...</p>
         </form>
@@ -181,8 +184,10 @@
             const name = document.getElementById("productName").value.trim();
             const price = parseFloat(document.getElementById("price").value);
             const imageURL = document.getElementById("imageURL").value.trim();
+            const stock = document.getElementById("stock").value;
 
-            if (!name || !price || !imageURL) {
+
+            if (!name || !price || !imageURL || !stock || stock<0) {
                 alert("Please fill in all fields.");
                 return;
             }
@@ -204,7 +209,7 @@
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${token}`
                     },
-                    body: JSON.stringify({ category, name, price, imageURL })
+                    body: JSON.stringify({ category, name, price, imageURL,stock })
                 });
 
                 const result = await response.json();

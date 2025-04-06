@@ -167,25 +167,32 @@ const productSchema = new mongoose.Schema({
     category: { type: String, required: true },
     name: { type: String, required: true },
     price: { type: Number, required: true },
-    imageURL: { type: String, required: true }
+    imageURL: { type: String, required: true },
+    stock:{type: Number,required:true}
 });
 
 const Product = mongoose.model("Product", productSchema);
-app.post("/add-products", verifyToken, verifyAdmin, async (req, res) => {
+app.post('/add-products', verifyToken, verifyAdmin, async (req, res) => {
+    const { category, name, price, imageURL, stock } = req.body;
+
+    if (!category || !name || !price || !imageURL || stock === "" || stock === undefined || stock === null) {
+        return res.status(400).json({ error: 'All fields are required' });
+    }
+
     try {
-        const { category, name, price, imageURL } = req.body;
+        const newProduct = new Product({
+            category,
+            name,
+            price,
+            imageURL,
+            stock: parseInt(stock)
+        });
 
-        if (!category || !name || !price || !imageURL) {
-            return res.status(400).json({ error: "All fields are required!" });
-        }
-
-        const newProduct = new Product({ category, name, price, imageURL });
         await newProduct.save();
-
-        res.json({ message: "Product added successfully!" });
-    } catch (error) {
-        console.error("❌ Error adding product:", error);
-        res.status(500).json({ error: "Server error" });
+        res.status(201).json({ message: 'Product added successfully' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Server error' });
     }
 });
 app.get("/products", async (req, res) => {
@@ -222,12 +229,12 @@ app.delete("/delete-product/:id", async (req, res) => {
 });
 app.put("/update-product/:id", async (req, res) => {
     const { id } = req.params;
-    const { name, price, category, imageURL } = req.body;
+    const { name, price, category, imageURL,stock } = req.body;
 
     try {
         const updatedProduct = await Product.findByIdAndUpdate(
             id,
-            { name, price, category, imageURL },
+            { name, price, category, imageURL,stock },
             { new: true } // This ensures the updated product is returned
         );
 
